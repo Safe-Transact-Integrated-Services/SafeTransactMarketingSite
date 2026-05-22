@@ -6,7 +6,6 @@ type HeaderProps = {
   onOpenContact: () => void
 }
 
-const regions = [{ name: 'Nigeria', flag: '🇳🇬' }]
 
 export default function Header({ onOpenContact }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -239,7 +238,7 @@ export default function Header({ onOpenContact }: HeaderProps) {
                 Developer Console
               </a>
               <div className="flex items-center gap-2 bg-white/5 p-4 rounded-2xl">
-                <span className="text-xl">{regions[0].flag}</span>
+                <span className="text-xl">🇳🇬</span>
                 <span className="text-sm font-medium">Nigeria</span>
               </div>
             </div>
