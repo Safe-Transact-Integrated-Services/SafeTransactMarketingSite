@@ -32,6 +32,29 @@ export default function Header({ onOpenContact }: HeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // Lock page scroll on mobile/tablet when menu is open; menu panel scrolls independently
+  useEffect(() => {
+    if (!isMenuOpen) return
+
+    const desktopQuery = window.matchMedia('(min-width: 1024px)')
+
+    const syncBodyScroll = () => {
+      if (desktopQuery.matches) {
+        document.body.style.overflow = ''
+        return
+      }
+      document.body.style.overflow = 'hidden'
+    }
+
+    syncBodyScroll()
+    desktopQuery.addEventListener('change', syncBodyScroll)
+
+    return () => {
+      desktopQuery.removeEventListener('change', syncBodyScroll)
+      document.body.style.overflow = ''
+    }
+  }, [isMenuOpen])
+
   const isLightNav = !!(isScrolled || navDropdown)
 
   return (
@@ -176,7 +199,8 @@ export default function Header({ onOpenContact }: HeaderProps) {
         )}
 
         {isMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-[68px] bg-brand-dark/95 backdrop-blur-md z-40 flex flex-col p-8 text-white space-y-6">
+          <div className="lg:hidden fixed inset-0 top-[68px] z-40 flex flex-col overflow-hidden bg-brand-dark/95 backdrop-blur-md">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-8 text-white space-y-6">
             <nav className="flex flex-col gap-4 text-lg font-semibold">
               <div className="space-y-2">
                 <span className="text-xs uppercase tracking-widest text-brand-teal font-bold">Solutions</span>
@@ -237,10 +261,7 @@ export default function Header({ onOpenContact }: HeaderProps) {
               >
                 Developer Console
               </a>
-              <div className="flex items-center gap-2 bg-white/5 p-4 rounded-2xl">
-                <span className="text-xl">🇳🇬</span>
-                <span className="text-sm font-medium">Nigeria</span>
-              </div>
+            </div>
             </div>
           </div>
         )}
