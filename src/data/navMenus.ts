@@ -58,26 +58,10 @@ export const resourcesMenu: ResourceMenuItem[] = [
   {
     title: 'FAQ',
     description: 'Answers about integrations, compliance, onboarding, and support.',
-    href: '#faq',
+    href: '/#faq',
     iconBg: 'bg-teal-100',
     iconName: 'questionCircle',
     iconClassName: 'text-brand-teal',
-  },
-  {
-    title: 'API Documentation',
-    description: 'REST resources, SDKs, sandbox credentials, and webhook guides.',
-    href: '#developer',
-    iconBg: 'bg-violet-100',
-    iconName: 'code',
-    iconClassName: 'text-violet-600',
-  },
-  {
-    title: 'Help Center',
-    description: 'Guides, status updates, and troubleshooting for merchants.',
-    href: '#developer',
-    iconBg: 'bg-emerald-100',
-    iconName: 'book',
-    iconClassName: 'text-emerald-600',
   },
   {
     title: 'Contact Us',

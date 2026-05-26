@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { solutionsMenu, resourcesMenu } from '../data/navMenus'
 import Icon from './Icons'
 
@@ -8,9 +9,13 @@ type HeaderProps = {
 
 
 export default function Header({ onOpenContact }: HeaderProps) {
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
+  const headerRef = useRef<HTMLElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [navDropdown, setNavDropdown] = useState<string | null>(null)
+  const [headerHeight, setHeaderHeight] = useState(72)
 
   const navLinkClass = (isLight: boolean) =>
     `hover:text-brand-teal transition duration-200 ${isLight ? 'text-brand-blue' : 'text-white/95'}`
@@ -28,9 +33,15 @@ export default function Header({ onOpenContact }: HeaderProps) {
       setIsScrolled(window.scrollY > 20)
       setNavDropdown(null)
     }
+    handleScroll()
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [pathname])
+
+  useEffect(() => {
+    setIsMenuOpen(false)
+    setNavDropdown(null)
+  }, [pathname])
 
   // Lock page scroll on mobile/tablet when menu is open; menu panel scrolls independently
   useEffect(() => {
@@ -55,25 +66,53 @@ export default function Header({ onOpenContact }: HeaderProps) {
     }
   }, [isMenuOpen])
 
-  const isLightNav = !!(isScrolled || navDropdown)
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      if (headerRef.current) {
+        setHeaderHeight(headerRef.current.offsetHeight)
+      }
+    }
+    updateHeaderHeight()
+    window.addEventListener('resize', updateHeaderHeight)
+    return () => window.removeEventListener('resize', updateHeaderHeight)
+  }, [isScrolled, isMenuOpen, navDropdown])
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia('(min-width: 1024px)')
+    const closeOnDesktop = () => {
+      if (desktopQuery.matches) setIsMenuOpen(false)
+    }
+    desktopQuery.addEventListener('change', closeOnDesktop)
+    return () => desktopQuery.removeEventListener('change', closeOnDesktop)
+  }, [])
+
+  const isSolidHeader = !isHome || isScrolled || !!navDropdown
+
+  const closeMobileMenu = () => setIsMenuOpen(false)
 
   return (
     <>
       <header
+        ref={headerRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled || navDropdown
+          isSolidHeader
             ? 'bg-white/95 backdrop-blur-md shadow-md py-4'
             : 'bg-transparent text-white py-6'
         }`}
         onMouseLeave={() => setNavDropdown(null)}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <div className="flex items-center gap-2 select-none cursor-pointer">
+          <Link
+            to="/"
+            onClick={closeMobileMenu}
+            className="flex items-center gap-2 select-none"
+            aria-label="SafeTransact home"
+          >
             <Icon name="logo" className="w-7 h-7 text-brand-teal transition-transform duration-300 hover:rotate-12" />
-            <span className={`font-display font-bold text-2xl tracking-tight ${isLightNav ? 'text-brand-blue' : 'text-white'}`}>
+            <span className={`font-display font-bold text-2xl tracking-tight ${isSolidHeader ? 'text-brand-blue' : 'text-white'}`}>
               safetransact<span className="text-brand-teal">.</span>
             </span>
-          </div>
+          </Link>
 
           <nav className="hidden lg:flex items-center gap-6 font-medium text-sm">
             <div
@@ -82,16 +121,23 @@ export default function Header({ onOpenContact }: HeaderProps) {
             >
               <button
                 type="button"
-                className={`inline-flex items-center gap-1 ${navLinkClass(isLightNav)} ${navDropdown === 'solutions' ? 'text-brand-teal' : ''}`}
+                className={`inline-flex items-center gap-1 ${navLinkClass(isSolidHeader)} ${navDropdown === 'solutions' ? 'text-brand-teal' : ''}`}
               >
                 Solutions
                 <Icon name="chevronDown" className={`w-3.5 h-3.5 transition-transform ${navDropdown === 'solutions' ? 'rotate-180' : ''}`} />
               </button>
             </div>
 
-            <a href="#developer" className={navLinkClass(isLightNav)}>Products</a>
-            <a href="#about" className={navLinkClass(isLightNav)}>Company</a>
-            <a href="#explore" className={navLinkClass(isLightNav)}>Insights</a>
+            <Link to="/#industries" className={navLinkClass(isSolidHeader)}>Products</Link>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `${navLinkClass(isSolidHeader)}${isActive ? ' text-brand-teal' : ''}`
+              }
+            >
+              About Us
+            </NavLink>
+            <Link to="/#explore" className={navLinkClass(isSolidHeader)}>Insights</Link>
 
             <div
               className="relative"
@@ -99,7 +145,7 @@ export default function Header({ onOpenContact }: HeaderProps) {
             >
               <button
                 type="button"
-                className={`inline-flex items-center gap-1 ${navLinkClass(isLightNav)} ${navDropdown === 'resources' ? 'text-brand-teal' : ''}`}
+                className={`inline-flex items-center gap-1 ${navLinkClass(isSolidHeader)} ${navDropdown === 'resources' ? 'text-brand-teal' : ''}`}
               >
                 Resources
                 <Icon name="chevronDown" className={`w-3.5 h-3.5 transition-transform ${navDropdown === 'resources' ? 'rotate-180' : ''}`} />
@@ -112,24 +158,13 @@ export default function Header({ onOpenContact }: HeaderProps) {
               type="button"
               onClick={openContactModal}
               className={`px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
-                isScrolled || navDropdown
+                isSolidHeader
                   ? 'bg-brand-teal text-white hover:bg-brand-teal/90'
                   : 'bg-white text-brand-blue hover:bg-slate-100'
               }`}
             >
               Contact
             </button>
-
-            <a
-              href="#developer"
-              className={`px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 border ${
-                isScrolled || navDropdown
-                  ? 'border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white'
-                  : 'border-white text-white hover:bg-white hover:text-brand-blue'
-              }`}
-            >
-              Developer Console
-            </a>
           </div>
 
           <button
@@ -137,9 +172,9 @@ export default function Header({ onOpenContact }: HeaderProps) {
             className="lg:hidden p-2 rounded-full hover:bg-slate-100/10 transition focus:outline-none"
           >
             {isMenuOpen ? (
-              <Icon name="close" className={`w-6 h-6 ${isLightNav ? 'text-brand-blue' : 'text-white'}`} />
+              <Icon name="close" className={`w-6 h-6 ${isSolidHeader ? 'text-brand-blue' : 'text-white'}`} />
             ) : (
-              <Icon name="menu" className={`w-6 h-6 ${isLightNav ? 'text-brand-blue' : 'text-white'}`} />
+              <Icon name="menu" className={`w-6 h-6 ${isSolidHeader ? 'text-brand-blue' : 'text-white'}`} />
             )}
           </button>
         </div>
@@ -180,27 +215,44 @@ export default function Header({ onOpenContact }: HeaderProps) {
                     >
                       {itemContent}
                     </button>
-                  ) : (
+                  ) : 'href' in item && 'external' in item && item.external ? (
                     <a
                       key={item.title}
-                      href={'href' in item ? item.href : '#'}
-                      target={'external' in item && item.external ? '_blank' : undefined}
-                      rel={'external' in item && item.external ? 'noopener noreferrer' : undefined}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={closeNavDropdown}
                       className={itemClass}
                     >
                       {itemContent}
                     </a>
-                  )
+                  ) : 'href' in item ? (
+                    <Link
+                      key={item.title}
+                      to={item.href}
+                      onClick={closeNavDropdown}
+                      className={itemClass}
+                    >
+                      {itemContent}
+                    </Link>
+                  ) : null
                 })}
               </div>
             </div>
           </div>
         )}
 
-        {isMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-[68px] z-40 flex flex-col overflow-hidden bg-brand-dark/95 backdrop-blur-md">
-            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-8 text-white space-y-6">
+      </header>
+
+      {isMenuOpen && (
+        <div
+          className="lg:hidden fixed left-0 right-0 bottom-0 z-40 flex flex-col overflow-hidden bg-brand-dark backdrop-blur-md"
+          style={{ top: headerHeight }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-8 text-white space-y-6">
             <nav className="flex flex-col gap-4 text-lg font-semibold">
               <div className="space-y-2">
                 <span className="text-xs uppercase tracking-widest text-brand-teal font-bold">Solutions</span>
@@ -217,9 +269,17 @@ export default function Header({ onOpenContact }: HeaderProps) {
                   </a>
                 ))}
               </div>
-              <a href="#developer" onClick={() => setIsMenuOpen(false)} className="hover:text-brand-teal transition">Products</a>
-              <a href="#about" onClick={() => setIsMenuOpen(false)} className="hover:text-brand-teal transition">Company</a>
-              <a href="#explore" onClick={() => setIsMenuOpen(false)} className="hover:text-brand-teal transition">Insights</a>
+              <Link to="/#industries" onClick={closeMobileMenu} className="hover:text-brand-teal transition">Products</Link>
+              <NavLink
+                to="/about"
+                onClick={closeMobileMenu}
+                className={({ isActive }) =>
+                  `hover:text-brand-teal transition${isActive ? ' text-brand-teal' : ''}`
+                }
+              >
+                About Us
+              </NavLink>
+              <Link to="/#explore" onClick={closeMobileMenu} className="hover:text-brand-teal transition">Insights</Link>
               <div className="space-y-2">
                 <span className="text-xs uppercase tracking-widest text-brand-teal font-bold">Resources</span>
                 {resourcesMenu.map((item) =>
@@ -228,44 +288,34 @@ export default function Header({ onOpenContact }: HeaderProps) {
                       key={item.title}
                       type="button"
                       onClick={openContactModal}
-                      className="block pl-2 text-base font-medium hover:text-brand-teal transition text-left"
+                      className="block pl-2 text-base font-medium hover:text-brand-teal transition text-left w-full"
                     >
                       {item.title}
                     </button>
-                  ) : (
-                    <a
+                  ) : 'href' in item ? (
+                    <Link
                       key={item.title}
-                      href={'href' in item ? item.href : '#'}
-                      onClick={() => setIsMenuOpen(false)}
+                      to={item.href}
+                      onClick={closeMobileMenu}
                       className="block pl-2 text-base font-medium hover:text-brand-teal transition"
                     >
                       {item.title}
-                    </a>
-                  )
+                    </Link>
+                  ) : null
                 )}
               </div>
             </nav>
             <div className="w-full h-px bg-white/10 my-4" />
-            <div className="flex flex-col gap-4">
-              <button
-                type="button"
-                onClick={openContactModal}
-                className="w-full text-center py-3 rounded-full bg-brand-teal text-white font-medium uppercase tracking-wider hover:bg-brand-teal/90 transition"
-              >
-                Contact Us
-              </button>
-              <a
-                href="#developer"
-                onClick={() => setIsMenuOpen(false)}
-                className="w-full text-center py-3 rounded-full border border-white font-medium uppercase tracking-wider hover:bg-white hover:text-brand-blue transition"
-              >
-                Developer Console
-              </a>
-            </div>
-            </div>
+            <button
+              type="button"
+              onClick={openContactModal}
+              className="w-full text-center py-3 rounded-full bg-brand-teal text-white font-medium uppercase tracking-wider hover:bg-brand-teal/90 transition"
+            >
+              Contact Us
+            </button>
           </div>
-        )}
-      </header>
+        </div>
+      )}
 
       {navDropdown && (
         <div

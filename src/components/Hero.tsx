@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import heroBg from '../assets/hero_bg.png'
 
 type HeroProps = {
@@ -29,12 +30,12 @@ export default function Hero({ onOpenContact }: HeroProps) {
             <strong className="font-semibold text-white">AjoVault</strong> for community savings — helping Nigerians transact and save with confidence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4 mb-8">
-            <a
-              href="#industries"
+            <Link
+              to="/#industries"
               className="px-8 py-4 bg-brand-teal hover:bg-brand-teal/90 text-white font-medium rounded-full shadow-lg shadow-brand-teal/25 hover:shadow-brand-teal/40 hover:-translate-y-0.5 transition-all duration-300 text-center"
             >
               Explore Solutions
-            </a>
+            </Link>
             <button
               type="button"
               onClick={onOpenContact}
