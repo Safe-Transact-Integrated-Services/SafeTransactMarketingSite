@@ -13,11 +13,11 @@ export default function ExploreSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {exploreCards.map((card) => (
             <div
               key={card.title}
-              className="relative group rounded-2xl overflow-hidden aspect-[4/5] shadow-lg cursor-pointer bg-brand-blue flex flex-col justify-end"
+              className="relative group rounded-2xl overflow-hidden aspect-[16/10] shadow-lg bg-brand-blue flex flex-col justify-end"
             >
               <img
                 src={card.image}
@@ -25,7 +25,7 @@ export default function ExploreSection() {
                 className="absolute inset-0 w-full h-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/30 to-transparent" />
-              <div className="relative p-8 space-y-3 z-10">
+              <div className="relative p-6 sm:p-7 space-y-2.5 z-10">
                 <span className="text-xs font-bold uppercase tracking-wider text-brand-teal">{card.label}</span>
                 <h3 className="text-xl font-bold text-white leading-snug group-hover:text-brand-teal transition-colors duration-300">
                   {card.title}

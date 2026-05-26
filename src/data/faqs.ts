@@ -20,9 +20,9 @@ export const faqs = [
       'Our products and support teams are focused on Nigeria, with offices in Lagos and Abuja.',
   },
   {
-    question: 'How do I integrate SafeTransact APIs?',
+    question: 'How can my business work with SafeTransact?',
     answer:
-      'Developers can sign up for our sandbox environment, review API documentation, generate test credentials, and integrate using REST endpoints and webhooks. Production access is granted after compliance and technical review.',
+      'Reach out through our contact form or toll-free line to discuss your use case. Our team will guide you through onboarding, compliance requirements, and the right product fit for your business.',
   },
   {
     question: 'Is SafeTransact PCI-DSS compliant?',
@@ -37,6 +37,6 @@ export const faqs = [
   {
     question: 'How can I get support?',
     answer:
-      'You can reach our support team via the toll-free line (+234 1 628 3888), developer documentation portal, or by contacting us through the footer contact links.',
+      'You can reach our support team via the toll-free line (+234 1 628 3888) or by contacting us through the footer contact links.',
   },
 ]

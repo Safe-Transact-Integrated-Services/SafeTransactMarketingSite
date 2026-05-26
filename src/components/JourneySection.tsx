@@ -2,28 +2,23 @@ import { journeyCards } from '../data/journeyCards'
 
 export default function JourneySection() {
   return (
-    <section className="py-24 bg-white border-b border-slate-100">
+    <section id="journey" className="py-24 bg-white border-b border-slate-100">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
-          <div className="space-y-4 max-w-2xl">
-            <div className="inline-block text-xs font-bold uppercase tracking-widest text-brand-teal bg-brand-teal/10 px-3 py-1 rounded-full">
-              Our Journey
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-blue tracking-tight">
-              Two Decades Of Growth & Innovation
-            </h2>
-            <p className="text-slate-500 font-light text-base">
-              From a pioneer in transaction switching to an integrated billing, scaling, and digital payment company.
-            </p>
-          </div>
-          <a href="#about" className="mt-4 md:mt-0 px-6 py-3 bg-brand-blue hover:bg-brand-dark text-white font-medium rounded-full transition duration-300 text-center text-sm">
+        <div className="space-y-4 max-w-2xl mb-16">
+          <div className="inline-block text-xs font-bold uppercase tracking-widest text-brand-teal bg-brand-teal/10 px-3 py-1 rounded-full">
             Our Journey
-          </a>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-blue tracking-tight">
+            Two Decades Of Growth & Innovation
+          </h2>
+          <p className="text-slate-500 font-light text-base">
+            From a pioneer in transaction switching to an integrated billing, scaling, and digital payment company.
+          </p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {journeyCards.map((card) => (
-            <div key={card.title} className="group space-y-4 cursor-pointer">
+            <div key={card.title} className="group space-y-4">
               <div className="overflow-hidden rounded-xl aspect-[4/3] shadow-md bg-slate-100">
                 <img
                   src={card.image}
