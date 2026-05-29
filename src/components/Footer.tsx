@@ -4,7 +4,6 @@ import {
   FooterUnavailableText,
   footerLinkClass,
   footerSocialIconClass,
-  scrollToTop,
 } from './FooterUnavailable'
 
 type FooterProps = {
@@ -26,12 +25,12 @@ export default function Footer({ onOpenContact }: FooterProps) {
             SafeTransact powers Arobo escrow payments and AjoVault community savings across Nigeria. Transforming businesses, powering dreams.
           </p>
           <div className="flex gap-4 pt-2">
-            <a href="#" onClick={scrollToTop} aria-label="Facebook" className={footerSocialIconClass}>
+            <button type="button" aria-label="Facebook" className={footerSocialIconClass}>
               <Icon name="facebook" className="w-4 h-4" />
-            </a>
-            <a href="#" onClick={scrollToTop} aria-label="X" className={footerSocialIconClass}>
+            </button>
+            <button type="button" aria-label="X" className={footerSocialIconClass}>
               <Icon name="twitter" className="w-4 h-4" />
-            </a>
+            </button>
             <a
               href="https://www.linkedin.com/company/safe-transact-ltd"
               target="_blank"
@@ -41,9 +40,9 @@ export default function Footer({ onOpenContact }: FooterProps) {
             >
               <Icon name="linkedin" className="w-4 h-4" />
             </a>
-            <a href="#" onClick={scrollToTop} aria-label="Instagram" className={footerSocialIconClass}>
+            <button type="button" aria-label="Instagram" className={footerSocialIconClass}>
               <Icon name="instagram" className="w-4 h-4" />
-            </a>
+            </button>
           </div>
           <div className="pt-4 text-xs font-semibold text-slate-500">
             📞 Toll Free: +234 1 628 3888
